@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 export default function Home() {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState("image/jpeg");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
