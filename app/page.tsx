@@ -34,7 +34,7 @@ export default function Home() {
     setLoading(false);
   }
 
-  function formatResult(text) {
+  function formatResult(text: string) {
     return text
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/^## (.+)$/gm, "<h2 style='font-size:16px;font-weight:600;margin:16px 0 8px'>$1</h2>")
