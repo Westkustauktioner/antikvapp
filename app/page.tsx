@@ -10,6 +10,7 @@ export default function Home() {
   const [showContact, setShowContact] = useState(false);
   const [phone, setPhone] = useState("");
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
 
   function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -39,18 +40,25 @@ export default function Home() {
     setLoading(false);
   }
 
+  async function handleSend() {
+    if (!phone || !image) return;
+    setSending(true);
+    await fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone, imageBase64: image, mimeType }),
+    });
+    setSending(false);
+    setSent(true);
+    setShowContact(false);
+  }
+
   function resetAll() {
     setImage(null);
     setResult("");
     setShowContact(false);
     setPhone("");
     setSent(false);
-  }
-
-  function handleSend() {
-    if (!phone) return;
-    setSent(true);
-    setShowContact(false);
   }
 
   return (
@@ -99,8 +107,8 @@ export default function Home() {
                   onChange={e => setPhone(e.target.value)}
                   style={{width:"100%",border:"1px solid #e7e5e4",borderRadius:"8px",padding:"10px 12px",fontSize:"16px",marginBottom:"12px",boxSizing:"border-box"}}
                 />
-                <button onClick={handleSend} disabled={!phone} style={{width:"100%",background:"#292524",color:"white",borderRadius:"12px",padding:"12px",fontWeight:"600",border:"none",cursor:"pointer",opacity:!phone?0.4:1}}>
-                  Skicka
+                <button onClick={handleSend} disabled={!phone || sending} style={{width:"100%",background:"#292524",color:"white",borderRadius:"12px",padding:"12px",fontWeight:"600",border:"none",cursor:"pointer",opacity:(!phone||sending)?0.4:1}}>
+                  {sending ? "Skickar..." : "Skicka"}
                 </button>
               </div>
             ) : (
@@ -118,15 +126,4 @@ export default function Home() {
           <div style={{textAlign:"center",padding:"8px"}}>
             <p style={{fontSize:"18px",fontWeight:"600",color:"#44403c",marginBottom:"8px"}}>Tack för att du kontaktade oss!</p>
             <p style={{fontSize:"14px",color:"#57534e",marginBottom:"24px"}}>Tyvärr passar detta föremål inte för försäljning via Westkustauktioner just nu. Vi hoppas att du hittar ett bra alternativ och är varmt välkommen tillbaka med andra föremål i framtiden.</p>
-            <button onClick={resetAll} style={{background:"none",border:"1px solid #e7e5e4",borderRadius:"12px",padding:"10px 24px",color:"#78716c",cursor:"pointer",fontSize:"14px",width:"100%"}}>
-              Kontrollera fler föremål
-            </button>
-          </div>
-
-        ) : (
-          <p style={{color:"#a8a29e",fontSize:"14px"}}>Ladda upp en bild så kontrollerar AI:n ditt föremål här.</p>
-        )}
-      </div>
-    </main>
-  );
-}
+            <button onClick={resetAll} style={{background:"none",border:"1px solid #e7e5e4",borderRadius:"12px",padding:
