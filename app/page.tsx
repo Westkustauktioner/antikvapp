@@ -70,7 +70,7 @@ export default function Home() {
               <div style={{fontSize:"14px"}}>Tryck för att ladda upp bild</div>
             </div>
           )}
-          <input type="file" accept="image/*" capture="environment" style={{display:"none"}} onChange={handleImageUpload} />
+          <input type="file" accept="image/*" style={{display:"none"}} onChange={handleImageUpload} />
         </label>
         <button onClick={analyzeImage} disabled={!image || loading} style={{width:"100%",background:"#292524",color:"white",borderRadius:"12px",padding:"12px",fontWeight:"600",border:"none",cursor:"pointer",opacity:(!image||loading)?0.4:1}}>
           {loading ? "Kontrollerar..." : "Kontrollera föremål"}
