@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
 
     const response = await client.messages.create({
       model: "claude-opus-4-5",
-      max_tokens: 1024,
+      max_tokens: 256,
       messages: [
         {
           role: "user",
@@ -24,21 +24,18 @@ export async function POST(request: NextRequest) {
             },
             {
               type: "text",
-              text: "Du är en expert på antikviteter och auktioner i Sverige. Analysera detta föremål och svara på svenska med: 1. Vad är det? 2. Ungefärligt år eller period 3. Uppskattat värde i SEK 4. Sälj hos Westkustauktioner? (Ja om värdet överstiger 1000 kr)",
+              text: "Du är en expert på antikviteter och auktioner i Sverige. Uppskatta marknadsvärdet på detta föremål i SEK. Om värdet överstiger 400 kr, svara endast med ordet JA. Om värdet understiger 400 kr, svara endast med ordet NEJ. Svara bara med JA eller NEJ, ingenting annat.",
             },
           ],
         },
       ],
     });
 
-    const text =
-      response.content[0].type === "text" ? response.content[0].text : "";
+    const raw = response.content[0].type === "text" ? response.content[0].text.trim() : "";
+    const text = raw.toUpperCase().includes("JA") ? "JA" : "NEJ";
     return NextResponse.json({ result: text });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: "Något gick fel vid analysen." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Något gick fel." }, { status: 500 });
   }
 }
