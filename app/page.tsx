@@ -14,7 +14,7 @@ export default function Home() {
     setMimeType(file.type);
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = reader.result.split(",")[1];
+      const base64 = (reader.result as string).split(",")[1];
       setImage(base64);
     };
     reader.readAsDataURL(file);
